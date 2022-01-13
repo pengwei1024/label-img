@@ -8,6 +8,8 @@ import { useStore } from "./store-provider"
 import { Shape } from "../src/Shape"
 import EntityModal from "./entity-modal"
 import "./control.less"
+import X2JS from "x2js";
+let x2js = new X2JS();
 
 const { TabPane } = Tabs
 
@@ -176,6 +178,31 @@ const Control = () => {
           }}>
             获取数据
           </Button>
+          <Button size="small" onClick={()=> {
+              // @ts-ignore
+              const [width, height] =  lb?.Image.getSize()
+              const list = lb?.getShapeList().map(({ id, tagContent, positions }) => {
+                  return {
+                      pose: 'Unspecified',
+                      truncated: 0,
+                      occluded: 0,
+                      difficult: 0,
+                      name: tagContent,
+                      bndbox: {xmin: positions[0][0], ymin: positions[0][1], xmax: positions[2][0], ymax: positions[2][1]}
+                  }
+              })
+              let jsonObj = {
+                  annotation: {
+                      folder: 'folder',
+                      filename: 'filename',
+                      size: {width, height, depth: 3},
+                      segmented: 0,
+                      object: list
+                  }
+              };
+              let xmlAsStr = x2js.js2xml(jsonObj);
+              alert(xmlAsStr)
+          }}>导出 VOC</Button>
           <Button size="small" onClick={() => {
             const base64 = lb?.toDataURL()
             if(!base64) return
