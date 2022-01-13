@@ -101,7 +101,7 @@ const SourceModal = () => {
           width: "100%"
         }} className="w-full block"
           onChange={({ file }) => {
-            lb?.load(file.originFileObj as any)
+            lb?.load(file.originFileObj as any, file.name)
             close()
           }}
           action={""}

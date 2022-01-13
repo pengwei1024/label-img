@@ -563,11 +563,12 @@ export class Platform extends EventReceiver {
 	/**
 	 * 加载图片
 	 * @param source ImageLoadSource 图片对象或图片路径
+	 * @param fileName string 图片名称
 	 */
-	public load = (source: ImageLoadSource) => {
+	public load = (source: ImageLoadSource, fileName: string = '') => {
 		this.reset()
 		return new Promise((c, e) => {
-			this.Image.load(source).then((img) => {
+			this.Image.load(source, fileName).then((img) => {
 				this.resize()
 				this.render()
 				this.emitter.emit("imageReady")

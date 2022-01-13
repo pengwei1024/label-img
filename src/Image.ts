@@ -12,6 +12,8 @@ export class Image extends EventReceiver {
   private origin: Point
   public complate: boolean
   public el: HTMLImageElement | null
+  // 记录图片的路径
+  public filePath: string | undefined
   constructor(origin?: Point){
     super()
     this.origin = origin || dfOrigin
@@ -21,15 +23,19 @@ export class Image extends EventReceiver {
 	/**
 	 * 加载图片
 	 * @param source ImageLoadSource 图片对象或图片路径
+	 * @param fileName string 图片名称
 	 */
-  load(source: ImageLoadSource){
+  load(source: ImageLoadSource, fileName: string | undefined){
     this.origin = dfOrigin
+	if (fileName){
+		this.filePath = fileName
+	}
     return new Promise<HTMLImageElement>((resolve, reject) => {
       this.complate = false;
 			const img = document.createElement("img")
 			new Promise((resolve, reject) => {
 				let src = source
-				if(source instanceof File){
+				if (source instanceof File) {
 					const reader = new FileReader()
 					reader.readAsDataURL(source)
 					reader.onload = (e) => {
@@ -40,8 +46,9 @@ export class Image extends EventReceiver {
 						reject()
 						throw "图片加载错误"
 					}
-				}else if(typeof source === "string"){
+				} else if (typeof source === "string") {
 					resolve(src)
+					this.filePath = src as string
 				}
 			}).then((src) => {
 				img.src = src as string

@@ -188,13 +188,14 @@ const Control = () => {
                       occluded: 0,
                       difficult: 0,
                       name: tagContent,
-                      bndbox: {xmin: positions[0][0], ymin: positions[0][1], xmax: positions[2][0], ymax: positions[2][1]}
+                      bndbox: {xmin: Math.round(positions[0][0]), ymin: Math.round(positions[0][1]),
+                          xmax: Math.round(positions[2][0]), ymax: Math.round(positions[2][1])}
                   }
               })
               let jsonObj = {
                   annotation: {
                       folder: 'folder',
-                      filename: 'filename',
+                      filename: lb?.Image.filePath || '',
                       size: {width, height, depth: 3},
                       segmented: 0,
                       object: list
