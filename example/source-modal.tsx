@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react"
-import {Modal, Divider, Button, Input, Upload} from "antd"
+import {Modal, Divider, Button, Input, Upload, message} from "antd"
 import {useLabelImg} from "./label-img-provider"
 import {useStore} from "./store-provider"
 import {Points} from "src/structure"
@@ -15,6 +15,7 @@ const dogEar = [
 const SourceModal = () => {
     const [visible, setVisible] = useState(true)
     const [url, setUrl] = useState("")
+    const [localPath, setLocalPath] = useState("")
     const [lb] = useLabelImg()
     const [_, setStore] = useStore()
 
@@ -57,8 +58,12 @@ const SourceModal = () => {
             })
         })
         const baseUrl = 'http://127.0.0.1:8877/api'
-        fetch(`${baseUrl}/getList`).then(response => response.json())
+        fetch(`${baseUrl}/getList?path=${localPath}`).then(response => response.json())
             .then(res => {
+                if (!res.dataset || res.dataset.length == 0) {
+                    message.warn('本地路径未找到!')
+                    return;
+                }
                 lb.load(`${baseUrl}/image?src=` + res.dataset[0]).then(() => {
                     close()
                 })
@@ -151,8 +156,13 @@ const SourceModal = () => {
             </div>
             <Divider/>
             <div>
+                <Input placeholder="输入本地路径" value={localPath} onChange={(e) => {
+                    setLocalPath(e.target.value)
+                }} style={{
+                    marginBottom: 8
+                }} />
                 <Button type="primary" block onClick={addTask}>
-                    新增标注任务
+                    打开本地标注任务
                 </Button>
             </div>
         </Modal>
