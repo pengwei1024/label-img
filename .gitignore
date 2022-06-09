@@ -27,3 +27,4 @@ sw-config.js
 test/
 dist/
 public/app.*
+.idea/

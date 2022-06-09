@@ -102,9 +102,10 @@ const Control = () => {
       <Divider></Divider>
       <Row justify="space-between" align="middle">
         <Col className="gutter-row" span={8}>
-          <a href="https://github.com/hold-baby/label-img">
-            go to github
-          </a>
+            <Button type="primary" onClick={() => {
+                lb?.callDrawFinish("")
+            }}>标注完成
+            </Button>
         </Col>
         <Col span={8}>
           <Button onClick={() => {

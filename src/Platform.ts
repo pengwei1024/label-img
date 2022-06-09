@@ -30,6 +30,8 @@ export class Platform extends EventReceiver {
   private _scale: number
 	private _options: LabelImgOptions
   private shapeRegister: ShapeRegister
+	// 绘制完成回调
+	private drawFinishCb?: Function
 	private drawing: IShapeCfg | null
 	private cache: Shape | null
 	private activeShape: Shape | null
@@ -595,6 +597,23 @@ export class Platform extends EventReceiver {
     this.shapeRegister.add(rid, options)
 		this.emitter.emit("shapeRegister")
 	}
+
+	/**
+	 * 注册绘制完成事件
+	 * @param cb 回调
+	 */
+	public registerDrawFinish = (cb: Function) => {
+		this.drawFinishCb = cb;
+	}
+
+	/**
+	 * 回调绘制完成
+	 * @param data 完成数据
+	 */
+	public callDrawFinish = (data: any) => {
+		this.drawFinishCb && this.drawFinishCb(data);
+	}
+
 	/**
 	 * 获取已注册图形 map
 	 */
