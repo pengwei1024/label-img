@@ -37,3 +37,19 @@ def get_image():
         folder_path, file_name = os.path.split(src)
         return flask.send_from_directory(folder_path, file_name, as_attachment=True)
     return jsonify({'msg': '文件找不到'})
+
+
+@mod.route('/voc', methods=['POST'])
+def write_voc():
+    """
+    voc 写入文件
+    :return:
+    """
+    file_path = request.form.get("filePath")
+    voc_content = request.form.get("vocContent")
+    path, name = os.path.split(file_path)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    with open(file_path, 'w') as f:
+        f.write(voc_content)
+    return jsonify({'code': 0})

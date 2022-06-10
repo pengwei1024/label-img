@@ -3,6 +3,8 @@ import {Modal, Divider, Button, Input, Upload, message} from "antd"
 import {useLabelImg} from "./label-img-provider"
 import {useStore} from "./store-provider"
 import {Points} from "src/structure"
+import {TaskInfo} from "src/TaskInfo";
+import queryString from 'query-string';
 
 const blackDogs = [
     [[620, 244], [799, 244], [799, 441], [620, 441]],
@@ -64,11 +66,31 @@ const SourceModal = () => {
                     message.warn('本地路径未找到!')
                     return;
                 }
+                let taskInfo = new TaskInfo(localPath);
+                taskInfo.taskCount = res.dataset.length
+                lb.setTaskInfo(taskInfo);
                 lb.load(`${baseUrl}/image?src=` + res.dataset[0]).then(() => {
                     close()
                 })
                 let index = 0;
-                lb.registerDrawFinish((data: any) => {
+                lb.registerDrawFinish((path: string, data: any) => {
+                    let parseUrl = queryString.parseUrl(path)
+                    let filePath = parseUrl.query.src
+                    let nameIndex = filePath?.lastIndexOf('/') || 0
+                    let fileName = filePath?.slice(nameIndex + 1)
+                    let filePrefix = fileName?.slice(0, fileName.lastIndexOf('.'));
+                    // 默认保存在项目目录 annotations 文件夹下
+                    let outFile = `${taskInfo.rootPath}/annotations/${filePrefix}.xml`
+                    console.log(fileName, filePrefix, outFile)
+                    const formData = new URLSearchParams();
+                    formData.append("filePath", outFile);
+                    formData.append("vocContent", data);
+                    fetch(`${baseUrl}/voc`, {
+                        method: 'post',
+                        body: formData,
+                    }).then(response => response.json()).then(res=> {
+                        console.log(res)
+                    })
                     lb.load(`${baseUrl}/image?src=` + res.dataset[++index]).then(() => {
                         close()
                     })

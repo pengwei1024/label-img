@@ -132,7 +132,7 @@ const Control = () => {
             <Row justify="space-between" align="middle">
                 <Col className="gutter-row" span={8}>
                     <Button type="primary" onClick={() => {
-                        lb?.callDrawFinish(exportVoc())
+                        lb?.callDrawFinish(lb?.Image.filePath || '', exportVoc())
                     }}>标注完成
                     </Button>
                 </Col>

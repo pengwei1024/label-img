@@ -10,6 +10,7 @@ import { ICursor, displayCursor } from "./cursor"
 import _ from "./lodash"
 import { css, create } from "./element"
 import { MoveKeyCode, FuncKeyCode } from "./keycode"
+import {TaskInfo} from "./TaskInfo";
 
 // 默认配置
 const defaulOptions = {
@@ -32,6 +33,7 @@ export class Platform extends EventReceiver {
   private shapeRegister: ShapeRegister
 	// 绘制完成回调
 	private drawFinishCb?: Function
+	public taskInfo?: TaskInfo
 	private drawing: IShapeCfg | null
 	private cache: Shape | null
 	private activeShape: Shape | null
@@ -607,11 +609,19 @@ export class Platform extends EventReceiver {
 	}
 
 	/**
+	 * 设置任务详情
+	 */
+	public setTaskInfo = (taskInfo : TaskInfo) => {
+		this.taskInfo = taskInfo;
+	}
+
+	/**
 	 * 回调绘制完成
+	 * @param path 当前文件路径
 	 * @param data 完成数据
 	 */
-	public callDrawFinish = (data: any) => {
-		this.drawFinishCb && this.drawFinishCb(data);
+	public callDrawFinish = (path: string, data: any) => {
+		this.drawFinishCb && this.drawFinishCb(path, data);
 	}
 
 	/**

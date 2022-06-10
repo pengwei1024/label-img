@@ -6,6 +6,7 @@ export * from "./structure"
 export * from "./cursor"
 export * from "./IDGenerator"
 export * from "./Shape"
+export * from "./TaskInfo"
 export * from "./Canvas"
 export * as utils from "./utils"
 
