@@ -128,7 +128,7 @@ export class Shape extends EventReceiver {
     this.showTag = showTag
     this.tagContent = tag ? tag.toString() : ""
     this.tagger = new Popover({
-      content: tag,
+      content: tag + "-" + id,
       style: {
         color: "#fff",
         bgColor: this.getStyle().dotColor

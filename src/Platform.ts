@@ -1039,18 +1039,18 @@ export class Platform extends EventReceiver {
 		 */
 		const isTagShow = this.isTagShow() && shape.isShowTag() && !this._isShapeMoving && !this.drawing
 		const tagger = shape.tagger
-    if(isTagShow){
-			if(this.isExport){
+		if (isTagShow) {
+			if (this.isExport) {
 				this.canvas.text(shape.tagContent, points[0], {
 					bgColor: dotColor,
 					color: "#fff"
 				})
-			}else {
+			} else {
 				const scale = this._scale
 				tagger.addTo(this.tagContainer)
 				tagger.move(points[0], this._options.shouldTagScale ? scale : 1)
 			}
-    }else{
+		} else {
 			tagger.remove()
 		}		
   }

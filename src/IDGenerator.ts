@@ -16,7 +16,8 @@ export class IDGenerator {
     this.len = len
   }
   getID(){
-    const id = _.padStart(String(this.count), this.len, "0")
+    // const id = _.padStart(String(this.count), this.len, "0")
+    const id = this.count.toString()
     this.count++
     return id
   }
