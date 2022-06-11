@@ -9,6 +9,7 @@ import {Shape} from "../src/Shape"
 import EntityModal from "./entity-modal"
 import "./control.less"
 import X2JS from "x2js";
+import {TaskType} from "../src/TaskInfo";
 
 let x2js = new X2JS();
 
@@ -129,20 +130,34 @@ const Control = () => {
     return (
         <div className="control">
             <Divider/>
-            <Row justify="space-between" align="middle">
-                <Col className="gutter-row" span={8}>
-                    <Button type="primary" onClick={() => {
-                        lb?.callDrawFinish(lb?.Image.filePath || '', exportVoc())
-                    }}>标注完成
-                    </Button>
-                </Col>
-                <Col span={8}>
-                    <Button onClick={() => {
-                        setIsCreate(true)
-                    }}>
-                        新建实体类型
-                    </Button>
-                </Col>
+            <Row>
+                <Tag>{lb?.Image.fileName}</Tag>
+                {
+                    lb?.taskInfo?.process ? (<Tag color="processing">{lb?.taskInfo?.process}</Tag>) : null
+                }
+                <Tag>{lb?.Image.getSize().join('*')}</Tag>
+            </Row>
+            <Row justify="space-between" align="middle" style={{
+                marginTop: 5
+            }}>
+                {
+                    lb?.taskInfo?.type == TaskType.MULTI_IMG ? (
+                        <Col className="gutter-row" span={8}>
+                            <Button type="primary" onClick={() => {
+                                if (lb?.taskInfo?.type == TaskType.MULTI_IMG) {
+                                    lb?.callDrawFinish(lb?.Image.filePath || '', exportVoc())
+                                }
+                            }}>标注完成下一张
+                            </Button>
+                        </Col>
+                    ) : (<Col span={8}>
+                        <Button type="primary" onClick={() => {
+                            setIsCreate(true)
+                        }}>
+                            新建实体类型
+                        </Button>
+                    </Col>)
+                }
                 <EntityModal visible={isCreate} onCancel={() => {
                     setIsCreate(false)
                 }} cb={cb}/>

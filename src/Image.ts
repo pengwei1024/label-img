@@ -13,7 +13,9 @@ export class Image extends EventReceiver {
   public complate: boolean
   public el: HTMLImageElement | null
   // 记录图片的路径
-  public filePath: string | undefined
+  public filePath?: string
+  // 文件名称
+  public fileName?: string
   constructor(origin?: Point){
     super()
     this.origin = origin || dfOrigin
@@ -27,6 +29,7 @@ export class Image extends EventReceiver {
 	 */
   load(source: ImageLoadSource, fileName: string | undefined){
     this.origin = dfOrigin
+	this.fileName = fileName
 	if (fileName){
 		this.filePath = fileName
 	}

@@ -12,6 +12,7 @@ export class ShapeRegister {
   public get: (rid: RegisterID) => any
   public is: (rid: RegisterID) => boolean
   public getMap: () => Map<any>
+  public clear: () => void
   constructor(){
     const shapeMap: Map<any> = {}
     this.add = (rid, shapeCfg) => {
@@ -30,5 +31,10 @@ export class ShapeRegister {
       return !!shapeMap[rid]
     }
     this.getMap = () => Object.assign({}, shapeMap)
+    this.clear = () => {
+      for (let i in shapeMap) {
+        delete shapeMap[i]
+      }
+    }
   }
 }

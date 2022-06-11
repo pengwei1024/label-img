@@ -595,9 +595,13 @@ export class Platform extends EventReceiver {
 	 * @param options IShapeCfg 图形配置
 	 */
 	public register = (rid: RegisterID, options: Omit<IShapeCfg, "registerID" | "name">) => {
-		if(this.isRegister(rid)) return
-    this.shapeRegister.add(rid, options)
+		if (this.isRegister(rid)) return
+		this.shapeRegister.add(rid, options)
 		this.emitter.emit("shapeRegister")
+	}
+
+	public cleanRegister = () => {
+		this.shapeRegister.clear()
 	}
 
 	/**

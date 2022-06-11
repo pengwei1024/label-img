@@ -3,7 +3,7 @@ import {Modal, Divider, Button, Input, Upload, message} from "antd"
 import {useLabelImg} from "./label-img-provider"
 import {useStore} from "./store-provider"
 import {Points} from "src/structure"
-import {TaskInfo} from "src/TaskInfo";
+import {TaskInfo, TaskType} from "src/TaskInfo";
 import queryString from 'query-string';
 
 const blackDogs = [
@@ -21,23 +21,23 @@ const SourceModal = () => {
     const [lb] = useLabelImg()
     const [_, setStore] = useStore()
 
-    // useEffect(() => {
-    //   if(!lb) return
-    //   lb.register("polygon", {
-    //     type: "Polygon",
-    //     style: {
-    //       normal: {
-    //         lineColor: "black",
-    //         opacity: .05
-    //       }
-    //     },
-    //     tag: "多边形",
-    //   })
-    //   lb.register("rect", {
-    //     type: "Rect",
-    //     tag: "矩形"
-    //   })
-    // }, [lb])
+    useEffect(() => {
+        if (!lb) return
+        lb.register("polygon", {
+            type: "Polygon",
+            style: {
+                normal: {
+                    lineColor: "black",
+                    opacity: .05
+                }
+            },
+            tag: "多边形",
+        })
+        lb.register("rect", {
+            type: "Rect",
+            tag: "矩形"
+        })
+    }, [lb])
 
     const close = () => {
         if (!lb) return
@@ -53,6 +53,7 @@ const SourceModal = () => {
     const addTask = () => {
         if (!lb) return
         const typeList = ['car', 'bike'];
+        lb.cleanRegister();
         typeList.forEach(item => {
             lb.register(item, {
                 type: "Rect",
@@ -66,14 +67,18 @@ const SourceModal = () => {
                     message.warn('本地路径未找到!')
                     return;
                 }
-                let taskInfo = new TaskInfo(localPath);
+                let taskInfo = new TaskInfo(localPath, TaskType.MULTI_IMG);
+                let finishCount = 0;
                 taskInfo.taskCount = res.dataset.length
+                taskInfo.process = `${finishCount}/${taskInfo.taskCount}`;
                 lb.setTaskInfo(taskInfo);
-                lb.load(`${baseUrl}/image?src=` + res.dataset[0]).then(() => {
+                lb.load(`${baseUrl}/image?src=` + res.dataset[0], res.dataset[0]).then(() => {
                     close()
                 })
                 let index = 0;
                 lb.registerDrawFinish((path: string, data: any) => {
+                    finishCount++;
+                    taskInfo.process = `${finishCount}/${taskInfo.taskCount}`;
                     let parseUrl = queryString.parseUrl(path)
                     let filePath = parseUrl.query.src
                     let nameIndex = filePath?.lastIndexOf('/') || 0
@@ -91,7 +96,7 @@ const SourceModal = () => {
                     }).then(response => response.json()).then(res=> {
                         console.log(res)
                     })
-                    lb.load(`${baseUrl}/image?src=` + res.dataset[++index]).then(() => {
+                    lb.load(`${baseUrl}/image?src=` + res.dataset[++index], res.dataset[++index]).then(() => {
                         close()
                     })
                 })
@@ -115,6 +120,7 @@ const SourceModal = () => {
                 }
             }
         })
+        lb.setTaskInfo(TaskInfo.createTask("./dog.jpg"));
         lb.load("./dog.jpg").then(() => {
             blackDogs.forEach((positions) => {
                 const shape = lb.createShape("black-dog", {
@@ -132,8 +138,9 @@ const SourceModal = () => {
         })
     }
 
-    const lodaByUrl = () => {
+    const loadByUrl = () => {
         if (!url || !lb) return
+        lb.setTaskInfo(TaskInfo.createTask(url));
         lb.load(url).then(() => {
             close()
         })
@@ -152,7 +159,7 @@ const SourceModal = () => {
                     width: "100%"
                 }} className="w-full block"
                         onChange={({file}) => {
-                            console.log(file.originFileObj)
+                            lb?.setTaskInfo(TaskInfo.createTask(file.name));
                             lb?.load(file.originFileObj as any, file.name)
                             close()
                         }}
@@ -168,7 +175,7 @@ const SourceModal = () => {
                 }} style={{
                     marginBottom: 8
                 }} placeholder="请输入图片地址"/>
-                <Button type="primary" block onClick={lodaByUrl}>加载线上图片</Button>
+                <Button type="primary" block onClick={loadByUrl}>加载线上图片</Button>
             </div>
             <Divider/>
             <div>

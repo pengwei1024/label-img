@@ -30,5 +30,6 @@ def handle_bad_request(e):
 
 from .controller import api
 from .views import index
+
 instance.register_blueprint(api.mod)
 instance.register_blueprint(index.mod)
