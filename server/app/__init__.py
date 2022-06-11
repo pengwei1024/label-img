@@ -1,11 +1,12 @@
 # coding=utf-8
 
-from flask import Flask, session, jsonify
+from flask import Flask, jsonify
 from flask_cors import *
 import pytz
 
 # 设置vue静态资源
-instance = Flask(__name__, template_folder="../../public")
+instance = Flask(__name__, template_folder="../../public",
+                 static_folder='../../public', static_url_path='')
 instance.config.from_object('config')
 # 设置允许跨域
 CORS(instance, supports_credentials=True)
@@ -28,4 +29,6 @@ def handle_bad_request(e):
 
 
 from .controller import api
+from .views import index
 instance.register_blueprint(api.mod)
+instance.register_blueprint(index.mod)
