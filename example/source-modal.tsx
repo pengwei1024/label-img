@@ -5,6 +5,7 @@ import {useStore} from "./store-provider"
 import {Points} from "src/structure"
 import {TaskInfo, TaskType} from "src/TaskInfo";
 import queryString from 'query-string';
+import {Shape} from "../src/Shape";
 
 const blackDogs = [
     [[620, 244], [799, 244], [799, 441], [620, 441]],
@@ -68,34 +69,36 @@ const SourceModal = () => {
                     return;
                 }
                 let taskInfo = new TaskInfo(localPath, TaskType.MULTI_IMG);
-                let finishCount = 0;
-                taskInfo.taskCount = res.dataset.length
+                let finishCount = res.existCount;
+                taskInfo.taskCount = res.dataset.length + res.existCount
                 taskInfo.process = `${finishCount}/${taskInfo.taskCount}`;
                 lb.setTaskInfo(taskInfo);
                 lb.load(`${baseUrl}/image?src=` + res.dataset[0], res.dataset[0]).then(() => {
                     close()
                 })
                 let index = 0;
-                lb.registerDrawFinish((path: string, data: any) => {
+                lb.registerDrawFinish((path: string, data: any, shape: Shape[]) => {
                     finishCount++;
                     taskInfo.process = `${finishCount}/${taskInfo.taskCount}`;
                     let parseUrl = queryString.parseUrl(path)
-                    let filePath = parseUrl.query.src
-                    let nameIndex = filePath?.lastIndexOf('/') || 0
-                    let fileName = filePath?.slice(nameIndex + 1)
-                    let filePrefix = fileName?.slice(0, fileName.lastIndexOf('.'));
-                    // 默认保存在项目目录 annotations 文件夹下
-                    let outFile = `${taskInfo.rootPath}/annotations/${filePrefix}.xml`
-                    console.log(fileName, filePrefix, outFile)
-                    const formData = new URLSearchParams();
-                    formData.append("filePath", outFile);
-                    formData.append("vocContent", data);
-                    fetch(`${baseUrl}/voc`, {
-                        method: 'post',
-                        body: formData,
-                    }).then(response => response.json()).then(res=> {
-                        console.log(res)
-                    })
+                    let filePath = parseUrl.query.src || ''
+                    // let nameIndex = filePath?.lastIndexOf('/') || 0
+                    // let fileName = filePath?.slice(nameIndex + 1)
+                    // let filePrefix = fileName?.slice(0, fileName.lastIndexOf('.'));
+                    // // 默认保存在项目目录 annotations 文件夹下
+                    // let outFile = `${taskInfo.rootPath}/annotations/${filePrefix}.xml`
+                    console.log('registerDrawFinish', filePath)
+                    if (shape && shape.length > 0) {
+                        const formData = new URLSearchParams();
+                        formData.append("filePath", filePath as string);
+                        formData.append("vocContent", data);
+                        fetch(`${baseUrl}/voc`, {
+                            method: 'post',
+                            body: formData,
+                        }).then(response => response.json()).then(res => {
+                            console.log(res)
+                        })
+                    }
                     lb.load(`${baseUrl}/image?src=` + res.dataset[++index], res.dataset[++index]).then(() => {
                         close()
                     })
@@ -141,7 +144,7 @@ const SourceModal = () => {
     const loadByUrl = () => {
         if (!url || !lb) return
         lb.setTaskInfo(TaskInfo.createTask(url));
-        lb.load(url).then(() => {
+        lb.load(url, url).then(() => {
             close()
         })
     }

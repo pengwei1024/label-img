@@ -97,3 +97,22 @@ const EntityModal = ({
 }
 
 export default EntityModal
+
+
+const NewTaskModal = ({
+                        cb,
+                        ...props
+                      }: Pick<ModalProps, "visible" | "onCancel"> & {
+  cb: (v: any) => void;
+}) => {
+  return (
+      <Modal
+          title="新建标注任务"
+          closable={false}
+          centered
+          footer={false}
+          {...props}>
+          <Form>
+          </Form>
+      </Modal>)
+}

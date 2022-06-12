@@ -138,14 +138,14 @@ const Control = () => {
                 <Tag>{lb?.Image.getSize().join('*')}</Tag>
             </Row>
             <Row justify="space-between" align="middle" style={{
-                marginTop: 5
+                marginTop: 8
             }}>
                 {
                     lb?.taskInfo?.type == TaskType.MULTI_IMG ? (
                         <Col className="gutter-row" span={8}>
                             <Button type="primary" onClick={() => {
                                 if (lb?.taskInfo?.type == TaskType.MULTI_IMG) {
-                                    lb?.callDrawFinish(lb?.Image.filePath || '', exportVoc())
+                                    lb?.callDrawFinish(lb?.Image.filePath || '', exportVoc(), lb?.getShapeList() || [])
                                 }
                             }}>标注完成下一张
                             </Button>

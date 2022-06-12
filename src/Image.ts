@@ -51,7 +51,7 @@ export class Image extends EventReceiver {
 					}
 				} else if (typeof source === "string") {
 					resolve(src)
-					this.filePath = src as string
+					this.filePath = source as string
 				}
 			}).then((src) => {
 				img.src = src as string
@@ -60,8 +60,9 @@ export class Image extends EventReceiver {
 					this.el = img
 					resolve(img)
 				}
-				img.onerror = () => {
+				img.onerror = (e) => {
 					reject()
+					console.log(e)
 					throw "图片加载错误"
 				}
 			})

@@ -613,19 +613,20 @@ export class Platform extends EventReceiver {
 	}
 
 	/**
+	 * 回调绘制完成
+	 * @param path 当前文件路径
+	 * @param data 完成数据
+	 * @param shape 绘制图像
+	 */
+	public callDrawFinish = (path: string, data: any, shape: Shape[]) => {
+		this.drawFinishCb && this.drawFinishCb(path, data);
+	}
+
+	/**
 	 * 设置任务详情
 	 */
 	public setTaskInfo = (taskInfo : TaskInfo) => {
 		this.taskInfo = taskInfo;
-	}
-
-	/**
-	 * 回调绘制完成
-	 * @param path 当前文件路径
-	 * @param data 完成数据
-	 */
-	public callDrawFinish = (path: string, data: any) => {
-		this.drawFinishCb && this.drawFinishCb(path, data);
 	}
 
 	/**
