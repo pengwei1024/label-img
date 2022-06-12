@@ -118,7 +118,7 @@ const Control = () => {
         let jsonObj = {
             annotation: {
                 folder: 'folder',
-                filename: lb?.Image.filePath || '',
+                filename: lb?.Image.fileName || '',
                 size: {width, height, depth: 3},
                 segmented: 0,
                 object: list

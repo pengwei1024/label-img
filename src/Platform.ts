@@ -619,7 +619,7 @@ export class Platform extends EventReceiver {
 	 * @param shape 绘制图像
 	 */
 	public callDrawFinish = (path: string, data: any, shape: Shape[]) => {
-		this.drawFinishCb && this.drawFinishCb(path, data);
+		this.drawFinishCb && this.drawFinishCb(path, data, shape);
 	}
 
 	/**
